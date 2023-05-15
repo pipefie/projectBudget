@@ -14,6 +14,8 @@ import java.awt.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import personalbudgetingapp.User;
+
 public class Start {
 
 	/**
@@ -23,6 +25,7 @@ public class Start {
 	private JFrame frame;
 	private JPasswordField passwordField;
 	private JTextField textField_email;
+	private User usuario;
 
 	/**
 	 * Launch the application.
@@ -96,6 +99,9 @@ public class Start {
 		button_login.setBackground(Color.GRAY);
 		button_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+					String userEmail = textField_email.getText();
+					char[] userPasswordChar = passwordField.getPassword();
+					String userPassword = new String(userPasswordChar);
 				
 			}
 		});
@@ -133,11 +139,5 @@ public class Start {
 		frame.getContentPane().add(label_noAccount);
 		
 		
-		/*
-		 * continuar aprendiendo a usar windowbuilder:
-		 * https://www.eclipse.org/windowbuilder/#:~:text=WindowBuilder%20is%20composed%20of%20SWT,will%20be%20generated%20for%20you.
-		 * https://documentation.basis.cloud/BASISHelp/WebHelp/eclipse-bdt/Getting_Started/Creating_a_WindowBuilder_Project.htm
-		 * https://www3.ntu.edu.sg/home/ehchua/programming/java/j4a_gui.html
-		 */
 	}
 }

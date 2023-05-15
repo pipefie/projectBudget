@@ -8,7 +8,11 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.swing.border.EmptyBorder;
+
+import personalbudgetingapp.Account;
 import personalbudgetingapp.User;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,6 +22,7 @@ import java.awt.event.ActionEvent;
 public class SignUp extends JFrame {
 	
 	private User usuario = new User();
+	private ArrayList<Account> accountsListUser = new ArrayList<>();
 
 	public SignUp(User usuario) throws HeadlessException {
 		super();
@@ -116,7 +121,7 @@ public class SignUp extends JFrame {
 		
 		JTextField last_name = new JTextField();
 		last_name.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		last_name.setForeground(Color.white);
+		last_name.setForeground(new Color(0, 0, 0));
 		last_name.setBounds(400,298,220,22);
 		getContentPane().add(last_name);
 		
@@ -127,6 +132,7 @@ public class SignUp extends JFrame {
 		getContentPane().add(label_last_name);
 		
 		JButton btnNext = new JButton("Next");
+		btnNext.setBackground(UIManager.getColor("Button.darkShadow"));
 		
 		
 		if (textField_email.getText().isEmpty() || passwordField.getPassword().length == 0 || first_name.getText().isEmpty() || last_name.getText().isEmpty()) {
@@ -142,7 +148,7 @@ public class SignUp extends JFrame {
 				usuario.setPassword(String.valueOf(passwordField.getPassword()));
 				usuario.setFirstName(first_name.getText());
 				usuario.setLasName(last_name.getText());
-				
+				usuario.setUserAccounts(accountsListUser);
 				
 				AccountCreation accountInfo = new AccountCreation(usuario);
 				accountInfo.setVisible(true);

@@ -8,7 +8,8 @@ public class User {
 	private String firstName;
 	private String lasName;
 	private ArrayList<Account> userAccounts;
-	private ArrayList<Transaction> transactions;
+	private ArrayList<Expenses> listExpenses;
+	private ArrayList<Income> listIncome;
 	public String getEmail() {
 		return email;
 	}
@@ -39,31 +40,41 @@ public class User {
 	public void setUserAccounts(ArrayList<Account> userAccounts) {
 		this.userAccounts = userAccounts;
 	}
-	public ArrayList<Transaction> getTransactions() {
-		return transactions;
+	public ArrayList<Expenses> getListExpenses() {
+		return listExpenses;
 	}
-	public void setTransactions(ArrayList<Transaction> transactions) {
-		this.transactions = transactions;
+	public void setListExpenses(ArrayList<Expenses> listExpenses) {
+		this.listExpenses = listExpenses;
+	}
+	public ArrayList<Income> getListIncome() {
+		return listIncome;
+	}
+	public void setListIncome(ArrayList<Income> listIncome) {
+		this.listIncome = listIncome;
 	}
 	@Override
 	public String toString() {
 		return "User [email=" + email + ", password=" + password + ", firstName=" + firstName + ", lasName=" + lasName
-				+ ", userAccounts=" + userAccounts + ", transactions=" + transactions + "]";
+				+ ", userAccounts=" + userAccounts + ", listExpenses=" + listExpenses + ", listIncome=" + listIncome
+				+ "]";
 	}
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	public User(String email, String password, String firstName, String lasName, ArrayList<Account> userAccounts,
-			ArrayList<Transaction> transactions) {
+			ArrayList<Expenses> listExpenses, ArrayList<Income> listIncome) {
 		super();
 		this.email = email;
 		this.password = password;
 		this.firstName = firstName;
 		this.lasName = lasName;
 		this.userAccounts = userAccounts;
-		this.transactions = transactions;
+		this.listExpenses = listExpenses;
+		this.listIncome = listIncome;
 	}
+	
+
 	
 	
 	

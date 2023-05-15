@@ -10,10 +10,8 @@ import java.util.List;
 
 import javax.swing.border.EmptyBorder;
 
-import personalbudgetingapp.Account;
+import personalbudgetingapp.*;
 import personalbudgetingapp.Account.AccountType;
-import personalbudgetingapp.Transaction;
-import personalbudgetingapp.User;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -22,10 +20,11 @@ import java.awt.event.ActionEvent;
 
 public class AccountCreation extends JFrame {
 	
-	private User usuario = new User();
+	private User usuario;
 	private Account cuentaUser = new Account(); 
-	private ArrayList<Account> accountsListUser = new ArrayList<>();
-	private ArrayList<Transaction> transactionsListUser = new ArrayList<>();
+
+	private ArrayList<Expenses> expensesListUser = new ArrayList<>();
+	private ArrayList<Income> incomeListUser = new ArrayList<>();
 	
 
 	private JPanel contentPane;
@@ -45,23 +44,11 @@ public class AccountCreation extends JFrame {
 	
 	
 
-	public AccountCreation(User usuario, ArrayList<Account> accountsListUser) throws HeadlessException {
-		super();
-		this.usuario = usuario;
-		this.accountsListUser = accountsListUser;
-	}
-
-
-
-	public AccountCreation(User usuario, Account cuentaUser, ArrayList<Account> accountsListUser)
-			throws HeadlessException {
+	public AccountCreation(User usuario, Account cuentaUser) throws HeadlessException {
 		super();
 		this.usuario = usuario;
 		this.cuentaUser = cuentaUser;
-		this.accountsListUser = accountsListUser;
 	}
-	
-	
 
 
 
@@ -231,13 +218,17 @@ public class AccountCreation extends JFrame {
 					startingAmount.setValue(0.0);
 					startingAmount.requestFocus();
 					}
-				accountsListUser.add(cuentaUser);
-				usuario.setUserAccounts(accountsListUser);
-				usuario.setTransactions(transactionsListUser);
+				usuario.getUserAccounts().add(cuentaUser);
+				usuario.setListExpenses(expensesListUser);
+				usuario.setListIncome(incomeListUser);
 				
 				JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(btnSignUp);
 				
 				JOptionPane.showMessageDialog(parentFrame, "Successful SignUp", "SignUp Complete", JOptionPane.INFORMATION_MESSAGE);
+				
+				MainWindow mainApp = new MainWindow(usuario);
+				mainApp.setVisible(true);
+				setVisible(false);
 				
 				
 				
