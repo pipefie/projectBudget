@@ -1,18 +1,17 @@
 package graphic;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
-import personalbudgetingapp.Account;
+import personalbudgetingapp.DataStorage;
 import personalbudgetingapp.User;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -21,41 +20,26 @@ import java.awt.event.ActionEvent;
 
 public class SignUp extends JFrame {
 	
-	private User usuario = new User();
-	private ArrayList<Account> accountsListUser = new ArrayList<>();
+	private User usuario;
+	private DataStorage data;
+	private AccountCreation accountInfo;
+	private Start startWindow;
 
-	public SignUp(User usuario) throws HeadlessException {
+
+	public SignUp(DataStorage data, Start startWindow) throws HeadlessException {
 		super();
-		this.setUsuario(usuario);
+		this.data = data;
+		this.startWindow = startWindow;
+		usuario = new User();
+		signUp();
 	}
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 6595274993213545359L;
 	private JPanel contentPane;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SignUp frame = new SignUp();
-					frame.setVisible(true);
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
-	/**
-	 * Create the frame.
-	 */
-	public SignUp() {
+	private void signUp() {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 730, 460);
@@ -133,40 +117,49 @@ public class SignUp extends JFrame {
 		
 		JButton btnNext = new JButton("Next");
 		btnNext.setBackground(UIManager.getColor("Button.darkShadow"));
+		btnNext.setEnabled(true);
 		
-		
-		if (textField_email.getText().isEmpty() || passwordField.getPassword().length == 0 || first_name.getText().isEmpty() || last_name.getText().isEmpty()) {
-			btnNext.setEnabled(false);
-		}
-		else 
-			btnNext.setEnabled(true);
-		
+
 		btnNext.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				if (textField_email.getText().isEmpty() 
+						|| passwordField.getPassword().length == 0 
+						|| first_name.getText().isEmpty() || last_name.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(SignUp.this, "Please fill in all the required fields.");
+		            return; // Stop further execution if validation fails
+					
+				}
+				
 				usuario.setEmail(textField_email.getText());
 				usuario.setPassword(String.valueOf(passwordField.getPassword()));
+				data.addAppUser(textField_email.getText(), passwordField.getPassword().toString());
+				
 				usuario.setFirstName(first_name.getText());
 				usuario.setLasName(last_name.getText());
-				usuario.setUserAccounts(accountsListUser);
 				
-				AccountCreation accountInfo = new AccountCreation(usuario);
+				accountInfo  = new AccountCreation(usuario, data, SignUp.this);
+				
 				accountInfo.setVisible(true);
 				setVisible(false);
 				
-			
-				/*
-				 * continuar:
-				 * armar el objeto 
-				 * arrojar error si falta informacion
-				 * arrojar error si la informacion no coincide con el tipo 
-				 * 
-				 */
+
 			}
 		});
-		btnNext.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		btnNext.setFont(new Font("Times New Roman", Font.PLAIN, 13));
 		btnNext.setBounds(615, 387, 89, 23);
 		contentPane.add(btnNext);
+		
+		JButton btnNewButton = new JButton("Back");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				startWindow.showWindow();
+				dispose();
+			}
+		});
+		btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, 13));
+		btnNewButton.setBounds(341, 386, 89, 23);
+		contentPane.add(btnNewButton);
 		
 		
 	}

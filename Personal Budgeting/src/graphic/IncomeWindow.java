@@ -10,13 +10,13 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -28,95 +28,65 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListDataListener;
 import personalbudgetingapp.Account;
 import personalbudgetingapp.CategoryofIncome;
+import personalbudgetingapp.DataStorage;
 import personalbudgetingapp.Income;
 import personalbudgetingapp.User;
 import java.util.Currency;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.awt.event.ActionEvent;
 
 public class IncomeWindow extends JFrame {
-	private Income currentIncome = new Income();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Income currentIncome;
 	private User usuario;
-	private ArrayList<Account> userAccounts = usuario.getUserAccounts();
-	private ArrayList<Income> incomeListUser = usuario.getListIncome();
+	private ArrayList<Account> userAccounts;
+	private ArrayList<Income> incomeListUser;
 	private JPanel contentPane;
-	private Date today = new Date();
-	
-	
-
-	public IncomeWindow(GraphicsConfiguration gc) {
-		super(gc);
-		// TODO Auto-generated constructor stub
-	}
-
-	public IncomeWindow(String title, GraphicsConfiguration gc) {
-		super(title, gc);
-		// TODO Auto-generated constructor stub
-	}
-
-	public IncomeWindow(String title) throws HeadlessException {
-		super(title);
-		// TODO Auto-generated constructor stub
-	}
-	
+	private JFormattedTextField amountTextField;
+	private NumberFormat numberFormat = NumberFormat.getNumberInstance();
+	private Date today;
+	private MainWindow mainWindow;
+	private DataStorage data;
 	
 
-	public IncomeWindow(User usuario) throws HeadlessException {
+	public IncomeWindow(Income currentIncome, User usuario, MainWindow mainWindow, DataStorage data)
+			throws HeadlessException {
 		super();
+		this.currentIncome = currentIncome;
 		this.usuario = usuario;
+		this.mainWindow = mainWindow;
+		this.data = data;
+		userAccounts = usuario.getUserAccounts();
+		incomeListUser = usuario.getListIncome();
+		today = new Date();
+		incomeWindow();
 	}
 
-	public IncomeWindow(User usuario, Date today) throws HeadlessException {
-		super();
-		this.usuario = usuario;
-		this.today = today;
-	}
-
-	public IncomeWindow(Income income, User usuario, Date today) throws HeadlessException {
-		super();
-		this.currentIncome = income;
-		this.usuario = usuario;
-		this.today = today;
-	}
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					IncomeWindow frame = new IncomeWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public IncomeWindow() {
+	private void incomeWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		setResizable(false);
 		setTitle("New Income");
+		getContentPane().setLayout(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		
-getContentPane().setBackground(new Color(0,0,0));
+		getContentPane().setBackground(new Color(0,0,0));
 		
 		JLabel amountLabel = new JLabel("Amount");
 		amountLabel.setBounds(15, 79, 53, 17);
 		amountLabel.setForeground(UIManager.getColor("Button.background"));
 		amountLabel.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		
-		
-		JTextField amountTextField = new JTextField();
+		numberFormat.setMinimumIntegerDigits(0);
+		numberFormat.setMaximumFractionDigits(2);
+		amountTextField = new JFormattedTextField(numberFormat);
 		amountTextField.setBounds(15, 103, 118, 22);
 		amountTextField.setColumns(10);
 		
@@ -130,18 +100,28 @@ getContentPane().setBackground(new Color(0,0,0));
 		currencyLabel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		currencyLabel.setForeground(UIManager.getColor("Button.background"));
 		
+
+		JFormattedTextField formattedCurrencyTextField = new JFormattedTextField();
+		formattedCurrencyTextField.setBounds(151, 102, 60, 22);
+		formattedCurrencyTextField.setBackground(new Color(105, 105, 105));
+		formattedCurrencyTextField.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		
 		
 		MutableComboBoxModel modelAccountsBox = new DefaultComboBoxModel<>(userAccounts.toArray(new Account[0]));
 		JComboBox<Account> accountComboBox = new JComboBox<>(modelAccountsBox);
 		accountComboBox.setBounds(15, 39, 196, 22);
 		modelAccountsBox.setSelectedItem(-1);
+		accountComboBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				Account accountSelected = (Account) accountComboBox.getSelectedItem();
+				Currency currencyAccount = accountSelected.getCurrencyAccount();
+				formattedCurrencyTextField.setText(currencyAccount.getCurrencyCode());
+			}
+		});
 		
-		JFormattedTextField formattedCurrencyTextField = new JFormattedTextField();
-		formattedCurrencyTextField.setBounds(151, 102, 60, 22);
-		formattedCurrencyTextField.setBackground(new Color(105, 105, 105));
-		formattedCurrencyTextField.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		Currency currencyAccount = usuario.getUserAccounts().get(accountComboBox.getSelectedIndex()).getCurrencyAccount();
-		formattedCurrencyTextField.setText(currencyAccount.toString());
 
 		JLabel categoryLabel = new JLabel("Category ");
 		categoryLabel.setBounds(15, 141, 55, 17);
@@ -152,6 +132,7 @@ getContentPane().setBackground(new Color(0,0,0));
 		JComboBox<CategoryofIncome> categoryComboBox = new JComboBox<>(modelCategoryBox);
 		categoryComboBox.setBounds(15, 164, 196, 22);
 		categoryComboBox.setSelectedIndex(-1);
+	
 		
 		JLabel lblNewLabel = new JLabel("Date");
 		lblNewLabel.setBounds(15, 204, 38, 17);
@@ -172,6 +153,7 @@ getContentPane().setBackground(new Color(0,0,0));
 		lblNewLabel_1.setBounds(251, 16, 62, 17);
 		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		lblNewLabel_1.setForeground(UIManager.getColor("Button.background"));
+		
 		contentPane.setLayout(null);
 		contentPane.add(amountLabel);
 		contentPane.add(currencyLabel);
@@ -186,22 +168,55 @@ getContentPane().setBackground(new Color(0,0,0));
 		contentPane.add(lblNewLabel_1);
 		contentPane.add(textAreaComments);
 		
-		JButton btnAdd = new JButton("Add");
-		
-		if(accountComboBox.getSelectedIndex()==-1 || amountTextField.getText().isEmpty() || categoryComboBox.getSelectedIndex()==-1) {
-			btnAdd.setEnabled(false);
+		if (currentIncome == null) {
+			
+			currentIncome = new Income();
 		}
 		else {
-			btnAdd.setEnabled(true);
+			accountComboBox.setSelectedItem(currentIncome.getAccountofTransaction());
+			amountTextField.setText(String.valueOf(currentIncome.getAmountofTransaction()));
+			formattedCurrencyTextField.setText(currentIncome.getCurrencyofTransaction().getCurrencyCode());
+			categoryComboBox.setSelectedItem(currentIncome.getCategory());
+			spinnerDate.setValue(currentIncome.getDateofTransaction().getTime());
+			if (currentIncome.getComments()!= null) {
+				textAreaComments.setText(currentIncome.getComments());
+			}
+			if (data.userHasIncome(usuario, currentIncome)) {
+				data.deleteIncome(usuario, currentIncome);
+				usuario.getListIncome().remove(currentIncome);
+			}
+			
 		}
+		
+		JButton btnAdd = new JButton("Add");
+		btnAdd.setEnabled(true);
 		
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				currentIncome.setAccountofTransaction((Account)modelAccountsBox.getSelectedItem());
-				currentIncome.setAmountofTransaction(Double.valueOf(amountTextField.getText()));
+				
+				if (accountComboBox.getSelectedIndex()==-1 
+						|| amountTextField.getText().isEmpty() || categoryComboBox.getSelectedIndex()==-1) {
+					JOptionPane.showMessageDialog(IncomeWindow.this, "Please fill in all the required fields.");
+		            return;
+				}
+
+				Account selectedAccount = (Account)modelAccountsBox.getSelectedItem();
+				currentIncome.setAccountofTransaction(selectedAccount);
+				
+				String amountNotNumber = amountTextField.getText();
+				double amountNumber = 0.0;
+				try {
+					amountNumber = Double.valueOf(amountNotNumber);
+					currentIncome.setAmountofTransaction(amountNumber);
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(null,"Invalid input. Please enter valid number, and use period (.) to separate decimals", "Error", JOptionPane.ERROR_MESSAGE );
+					amountTextField.setValue(0.0);
+					amountTextField.requestFocus();
+				}
+				
 				currentIncome.setCurrencyofTransaction((Currency)((Account) modelAccountsBox.getSelectedItem()).getCurrencyAccount());
-				currentIncome.setCategory((CategoryofIncome)modelCategoryBox.getSelectedItem());
-				Date selectedDate = (Date)modelSpinner.getValue();
+				currentIncome.setCategory(String.valueOf(modelCategoryBox.getSelectedItem()));
+				Date selectedDate = modelSpinner.getDate();
 				GregorianCalendar selectedCalendar = new GregorianCalendar();
 				selectedCalendar.setTime(selectedDate);
 				currentIncome.setDateofTransaction(selectedCalendar);
@@ -211,14 +226,29 @@ getContentPane().setBackground(new Color(0,0,0));
 					currentIncome.setComments(null);
 				}
 				incomeListUser.add(currentIncome);
+				usuario.getSpecificAccount(selectedAccount).updateAmountAccount(currentIncome);
+				data.addUserIncome(usuario, currentIncome);
+				mainWindow.updateIncomeList(incomeListUser);
+				mainWindow.setVisible(true);
+				dispose();
 				
 				
 			}
 		});
-		btnAdd.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		btnAdd.setFont(new Font("Times New Roman", Font.PLAIN, 13));
 		btnAdd.setBackground(UIManager.getColor("Button.disabledForeground"));
 		btnAdd.setBounds(339, 226, 72, 23);
 		contentPane.add(btnAdd);
+		
+		JButton btnNewButton = new JButton("Back");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mainWindow.setVisible(true);
+				dispose();
+			}
+		});
+		btnNewButton.setFont(new Font("Times New Roman", Font.PLAIN, 13));
+		btnNewButton.setBounds(251, 227, 72, 23);
+		contentPane.add(btnNewButton);
 	}
-
 }

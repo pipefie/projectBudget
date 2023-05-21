@@ -1,9 +1,10 @@
 package personalbudgetingapp;
 
+import java.io.Serializable;
 import java.util.Currency;
 import java.util.GregorianCalendar;
 
-public class Transaction {
+public class Transaction implements Serializable {
 	
 	private Account accountofTransaction;
 	private double amountofTransaction;

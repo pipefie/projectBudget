@@ -14,6 +14,7 @@ import java.awt.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import personalbudgetingapp.DataStorage;
 import personalbudgetingapp.User;
 
 public class Start {
@@ -25,7 +26,8 @@ public class Start {
 	private JFrame frame;
 	private JPasswordField passwordField;
 	private JTextField textField_email;
-	private User usuario;
+	private DataStorage data;
+	private SignUp signUpWindow;
 
 	/**
 	 * Launch the application.
@@ -47,7 +49,16 @@ public class Start {
 	 * Create the application.
 	 */
 	public Start() {
+		data = new DataStorage();
+		try {
+			data.readdDataUsers();
+			data.readDataCredentials(); 
+		} catch (Exception e) {
+			System.err.println("Data file not found. Starting with an empty DataStorage object.");
+			e.printStackTrace();
+		}
 		initialize();
+
 	}
 
 	/**
@@ -84,10 +95,9 @@ public class Start {
 		button_signup.setBackground(Color.GRAY);
 		button_signup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SignUp signUpWindow = new SignUp();
-				signUpWindow.setVisible(true);
 				frame.setVisible(false);
-	
+				signUpWindow = new SignUp(data, Start.this);
+				signUpWindow.setVisible(true);
 			}
 		});
 		button_signup.setBounds(545, 373, 75, 22);
@@ -102,6 +112,15 @@ public class Start {
 					String userEmail = textField_email.getText();
 					char[] userPasswordChar = passwordField.getPassword();
 					String userPassword = new String(userPasswordChar);
+					if (data.checkCredentials(userEmail, userPassword)) {
+						User usuario = data.getUser(userEmail);
+						MainWindow mainWindow = new MainWindow(usuario, data, Start.this);
+						mainWindow.setVisible(true);
+						frame.setVisible(false);
+					}
+					else {
+						JOptionPane.showMessageDialog(frame, "Invalid email or password");
+					}
 				
 			}
 		});
@@ -140,4 +159,9 @@ public class Start {
 		
 		
 	}
+	
+	public void showWindow () {
+		frame.setVisible(true);
+	}
+	
 }

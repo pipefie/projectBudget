@@ -43,8 +43,7 @@ public class Account {
 	}
 	@Override
 	public String toString() {
-		return "Account [accountName=" + accountName + ", country=" + country + ", starting_amount=" + starting_amount
-				+ ", currencyAccount=" + currencyAccount + "]";
+		return accountName;
 	}
 	public Account() {
 		super();
@@ -60,8 +59,21 @@ public class Account {
 		this.starting_amount = starting_amount;
 	}
 
+	public void updateAmountAccount (Transaction transaction) {
+
+		if(transaction instanceof Income) {
+			starting_amount = starting_amount + transaction.getAmountofTransaction();
+		}
+		else if (transaction instanceof Expenses) {
+			starting_amount = starting_amount - transaction.getAmountofTransaction();
+		}
+	}
 	
-	
+	public String details () {
+		return "Account: "+accountName+"\nCountry: "+country+
+				"\nType: "+accountType+"\nCurrent Amount: "+starting_amount+currencyAccount.getSymbol();
+	}
+
 	
 	/*
 	 * investigar como funciona currency:

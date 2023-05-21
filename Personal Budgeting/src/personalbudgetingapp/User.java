@@ -1,8 +1,9 @@
 package personalbudgetingapp;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User {  
+public class User implements Serializable{  
 	private String email;
 	private String password; 
 	private String firstName;
@@ -74,24 +75,12 @@ public class User {
 		this.listIncome = listIncome;
 	}
 	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/* continuar:
-	 * https://consumer.gov/managing-your-money/making-budget
-	 * https://www.moneyhelper.org.uk/en/everyday-money/budgeting/use-our-budget-planner.html
-	 * https://www.quicken.com/blog/budget-categories/
-	 * 
-	 * seguir en bases de datos:
-	 * https://cassandra.apache.org/_/quickstart.html
-	 * https://neo4j.com/developer/java/
-	 */
-
+	public Account getSpecificAccount (Account accountToFind) {
+		for (Account account : userAccounts) {
+			if (account.equals(accountToFind)) {
+				return account;
+			}
+		}
+		return null;
+	}
 }

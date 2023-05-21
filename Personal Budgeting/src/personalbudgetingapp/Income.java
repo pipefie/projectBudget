@@ -4,14 +4,14 @@ import java.util.Currency;
 import java.util.GregorianCalendar;
 
 public class Income extends Transaction {
-	private CategoryofIncome category;
+	private String categoryofIncome;
 
-	public CategoryofIncome getCategory() {
-		return category;
+	public String getCategory() {
+		return categoryofIncome;
 	}
 
-	public void setCategory(CategoryofIncome category) {
-		this.category = category;
+	public void setCategory(String categoryofIncome) {
+		this.categoryofIncome = categoryofIncome;
 	}
 
 	public Income() {
@@ -24,10 +24,21 @@ public class Income extends Transaction {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Income(CategoryofIncome category,Account accountofTransaction, double amountofTransaction, Currency currencyofTransaction,
+	public Income(String categoryofIncome,Account accountofTransaction, double amountofTransaction, Currency currencyofTransaction,
 			GregorianCalendar dateofTransaction, String comments) {
 		super(accountofTransaction, amountofTransaction, currencyofTransaction, dateofTransaction, comments);
-		this.category = category;
+		this.categoryofIncome = categoryofIncome;
 	}
+
+	@Override
+	public String toString() {
+		return  categoryofIncome + String.valueOf(getAmountofTransaction())+"\n"+String.valueOf(getDateofTransaction());
+	}
+	public String details() {
+		return "Account: "+ getAccountofTransaction().getAccountName()
+				+"\nAmount: "+ getAmountofTransaction()+getCurrencyofTransaction().getSymbol()+
+				"\nCategory: "+getCategory()+"\nDate: "+getDateofTransaction().getTime().toString();
+		}
+	
 
 }

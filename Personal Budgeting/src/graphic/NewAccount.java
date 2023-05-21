@@ -1,25 +1,46 @@
 package graphic;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.*;
-import java.util.List;
-
-import javax.swing.border.EmptyBorder;
-
-import personalbudgetingapp.*;
-import personalbudgetingapp.Account.AccountType;
+import java.util.ArrayList;
+import java.util.Currency;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.MutableComboBoxModel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 
-public class AccountCreation extends JFrame {
-	
+import personalbudgetingapp.Account;
+import personalbudgetingapp.DataStorage;
+import personalbudgetingapp.Expenses;
+import personalbudgetingapp.Income;
+import personalbudgetingapp.User;
+import personalbudgetingapp.Account.AccountType;
+
+public class NewAccount extends JFrame {
+
 	private User usuario;
 	private Account cuentaUser; 
 	private ArrayList<Account> userAccounts;
@@ -31,22 +52,20 @@ public class AccountCreation extends JFrame {
 	private JPanel contentPane;
 	private JTextField accountName;
 	private JTextField textFieldCountry;
-	private SignUp signupWindow;
+	private MainWindow mainWindow;
 	
 	private NumberFormat numberFormat = NumberFormat.getNumberInstance();
 	private JFormattedTextField startingAmount;
 	
 
 
-	public AccountCreation(User usuario, DataStorage data, SignUp signupWindow) throws HeadlessException {
+	public NewAccount(User usuario, DataStorage data, MainWindow mainWindow) throws HeadlessException {
 		super();
 		this.usuario = usuario;
 		this.data = data;
-		this.signupWindow = signupWindow;
+		this.mainWindow = mainWindow;
 		cuentaUser = new Account();
-		userAccounts = new ArrayList<>();
-		expensesListUser = new ArrayList<>();
-		incomeListUser = new ArrayList<>();
+		userAccounts = usuario.getUserAccounts();
 		accountCreation();
 	}
 
@@ -169,7 +188,7 @@ public class AccountCreation extends JFrame {
 				
 				if (accountName.getText().isEmpty() || (!rdbtnCop.isSelected() && !rdbtnEur.isSelected() && !rdbtnUsd.isSelected()) ||
 				textFieldCountry.getText().isEmpty() || startingAmount.getText().isEmpty() ||typesAccount.getSelectedIndex() == -1  ) {
-					JOptionPane.showMessageDialog(AccountCreation.this, "Please fill in all the required fields.");
+					JOptionPane.showMessageDialog(NewAccount.this, "Please fill in all the required fields.");
 		            return;
 				}
 				
@@ -199,23 +218,13 @@ public class AccountCreation extends JFrame {
 					startingAmount.setValue(0.0);
 					startingAmount.requestFocus();
 					}
-				
-
-				usuario.setUserAccounts(userAccounts);
-				usuario.setListExpenses(expensesListUser);
-				usuario.setListIncome(incomeListUser);
 				userAccounts.add(cuentaUser);
-				data.newUser(usuario);
-				
-				userAccounts.add(cuentaUser);
+				mainWindow.setVisible(true);
 				JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(btnAdd);
-				
 				JOptionPane.showMessageDialog(parentFrame, "Successful SignUp", "SignUp Complete", JOptionPane.INFORMATION_MESSAGE);
 				
-				MainWindow mainApp = new MainWindow(usuario,data);
-				mainApp.setVisible(true);
-				
 				dispose();
+				
 				
 			}
 		});
@@ -226,7 +235,8 @@ public class AccountCreation extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				signupWindow.setVisible(true);
+				mainWindow.setVisible(true);
+
 				dispose();
 			}
 		});

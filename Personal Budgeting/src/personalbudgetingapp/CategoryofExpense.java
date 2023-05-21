@@ -9,8 +9,8 @@ public enum CategoryofExpense {
 	SHOPPING("Clothes","Jewels","Accesories","Health and Beauty","Kids","Pets/Animals","Electronics/Accesories","Gifts/Joy","Tools","Free Time","Cleaning","Drug-store"),
 	TRANSPORTATION("Public (taxi,metro,bus,bike,other)","Long Distance","Personal Vehicule"),
 	LIFE_ENTERTAINMENT("Health Care","Personal Care", "Fitness","Culture","Life Events","Hobbies","Education/Development","Book/Audio","Subscriptions","Holiday/Trips/Hotels","Charity/Gifts","Tobacco,alcohol,etc.","Loterry/Gambling"),
-	COMMUNICATION("Phone/Cellphone","Internte","Software,apps,games,etc,"),
-	FINANCIAL_EXPENSES("Taxes","Insurances","Loan/Interests","Fines","Charges/Fees","Advisors","Other"),
+	COMMUNICATION("Phone/Cellphone","Internte","Software,apps,games,etc"),
+	FINANCIAL_EXPENSES("Taxes","Insurances","Loan/Interests","Fines","Charges/Fees","Advisors"),
 	OTHERS
 	;
 	
@@ -31,6 +31,17 @@ public enum CategoryofExpense {
 	
 	public String[] getSubcategories() {
 		return subcategories;
+	}
+	
+	public static CategoryofExpense getCategoryFromSubcategory (String subcategory) {
+		for (CategoryofExpense category : CategoryofExpense.values()) {
+			for (String categorySubcategory : category.getSubcategories()) {
+				if(categorySubcategory.equals(subcategory)) {
+					return category;
+				}
+			}
+		}
+		return null;
 	}
 
 	
