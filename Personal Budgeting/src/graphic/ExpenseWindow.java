@@ -185,7 +185,7 @@ public class ExpenseWindow extends JFrame {
 		
 		if (currentExpense == null) {
 			currentExpense = new Expenses();
-			//falta modificar las estructuras de datos para que no sean dos expense o income iguales sino la modificacion pase a tomar el lugar, en caso que sea modify
+			
 		}
 		
 		else {

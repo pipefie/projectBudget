@@ -91,7 +91,8 @@ public class Start {
 		
 		
 		Button button_signup = new Button("Sign Up");
-		button_signup.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		button_signup.setForeground(UIManager.getColor("Button.background"));
+		button_signup.setFont(new Font("Times New Roman", Font.PLAIN, 13));
 		button_signup.setBackground(Color.GRAY);
 		button_signup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -105,8 +106,9 @@ public class Start {
 		
 
 		Button button_login = new Button("Log In");
-		button_login.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		button_login.setBackground(Color.GRAY);
+		button_login.setForeground(UIManager.getColor("Button.background"));
+		button_login.setFont(new Font("Times New Roman", Font.PLAIN, 13));
+		button_login.setBackground(UIManager.getColor("Button.darkShadow"));
 		button_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					String userEmail = textField_email.getText();
@@ -116,6 +118,8 @@ public class Start {
 						User usuario = data.getUser(userEmail);
 						MainWindow mainWindow = new MainWindow(usuario, data, Start.this);
 						mainWindow.setVisible(true);
+						mainWindow.updateExpenseList(usuario.getListExpenses());
+						mainWindow.updateIncomeList(usuario.getListIncome());
 						frame.setVisible(false);
 					}
 					else {

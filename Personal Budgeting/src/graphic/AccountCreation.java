@@ -200,11 +200,11 @@ public class AccountCreation extends JFrame {
 					startingAmount.requestFocus();
 					}
 				
-
+				userAccounts.add(cuentaUser);
 				usuario.setUserAccounts(userAccounts);
 				usuario.setListExpenses(expensesListUser);
 				usuario.setListIncome(incomeListUser);
-				userAccounts.add(cuentaUser);
+				
 				data.newUser(usuario);
 				
 				userAccounts.add(cuentaUser);

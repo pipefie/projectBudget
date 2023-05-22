@@ -59,13 +59,15 @@ public class NewAccount extends JFrame {
 	
 
 
-	public NewAccount(User usuario, DataStorage data, MainWindow mainWindow) throws HeadlessException {
+	public NewAccount(User usuario, DataStorage data, MainWindow mainWindow, Account cuentaUser) throws HeadlessException {
 		super();
 		this.usuario = usuario;
 		this.data = data;
 		this.mainWindow = mainWindow;
-		cuentaUser = new Account();
+		this.cuentaUser = cuentaUser;
 		userAccounts = usuario.getUserAccounts(); //encontrar duplicado de account
+		
+		
 		accountCreation();
 	}
 
@@ -181,10 +183,31 @@ public class NewAccount extends JFrame {
 		JButton btnAdd = new JButton("Add");
 		btnAdd.setEnabled(true);
 		
-		
+		if (cuentaUser == null) {
+			cuentaUser = new Account();
+		}
+		else {
+			accountName.setText(cuentaUser.getAccountName());
+			if (cuentaUser.getCurrencyAccount().getCurrencyCode().equals("USD")) {
+				rdbtnUsd.doClick();
+			}
+			else if (cuentaUser.getCurrencyAccount().getCurrencyCode().equals("EUR")) {
+				rdbtnEur.doClick();
+			}
+			else if (cuentaUser.getCurrencyAccount().getCurrencyCode().equals("COP")) {
+				rdbtnCop.doClick();
+			}
+			textFieldCountry.setText(cuentaUser.getCountry());
+			typesAccount.setSelectedItem(cuentaUser.getAccountType());
+			startingAmount.setText(String.valueOf(cuentaUser.getStarting_amount()));
+		}
 		
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				if (usuario.getUserAccounts().contains(cuentaUser)) {
+					userAccounts.remove(cuentaUser);
+				}
 				
 				if (accountName.getText().isEmpty() || (!rdbtnCop.isSelected() && !rdbtnEur.isSelected() && !rdbtnUsd.isSelected()) ||
 				textFieldCountry.getText().isEmpty() || startingAmount.getText().isEmpty() ||typesAccount.getSelectedIndex() == -1  ) {
@@ -220,6 +243,7 @@ public class NewAccount extends JFrame {
 					}
 				userAccounts.add(cuentaUser);
 				mainWindow.setVisible(true);
+				mainWindow.updateAccountBox(userAccounts);
 	
 				dispose();
 				

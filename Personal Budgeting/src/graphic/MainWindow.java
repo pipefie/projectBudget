@@ -56,6 +56,8 @@ public class MainWindow extends JFrame {
 	private Start startWindow;
 	private JButton btnDelete;
 	private JButton btnModify;
+	private MutableComboBoxModel modelAccounts;
+	private JComboBox <Account> comboBoxAccounts;
 	//variable to track the JList selected
 	private String selectedList;
 
@@ -120,7 +122,7 @@ public class MainWindow extends JFrame {
 				incomeWindow.setVisible(true);
 			}
 		});
-		btnIncome.setBounds(310, 130, 100, 23);
+		btnIncome.setBounds(310, 115, 104, 23);
 		contentPane.add(btnIncome);
 		
 		JButton btnExpense = new JButton("Expense");
@@ -132,7 +134,7 @@ public class MainWindow extends JFrame {
 				setVisible(false);
 			}
 		});
-		btnExpense.setBounds(310, 80, 100, 23);
+		btnExpense.setBounds(310, 65, 104, 23);
 		contentPane.add(btnExpense);
 		
 		JButton btnDetails = new JButton("Details");
@@ -141,18 +143,30 @@ public class MainWindow extends JFrame {
 		contentPane.add(btnDetails);
 		
 		btnDelete = new JButton("Delete");
-		btnDelete.setBounds(310, 230, 100, 23);
+		btnDelete.setBounds(310, 215, 104, 23);
 		contentPane.add(btnDelete);
 		
 		btnModify = new JButton("Modify");
-		btnModify.setBounds(310, 180, 100, 23);
+		btnModify.setBounds(310, 165, 104, 23);
 		contentPane.add(btnModify);
 		
-		MutableComboBoxModel modelAccounts = new DefaultComboBoxModel<>(usuario.getUserAccounts().toArray());
-		JComboBox <Account> comboBoxAccounts = new JComboBox<Account>(modelAccounts);
+		modelAccounts = new DefaultComboBoxModel<>(usuario.getUserAccounts().toArray());
+		comboBoxAccounts = new JComboBox<Account>(modelAccounts);
 		comboBoxAccounts.setBackground(new Color(128, 128, 128));
 		comboBoxAccounts.setBounds(420, 68, 200, 23);
 		comboBoxAccounts.setSelectedIndex(-1);
+		comboBoxAccounts.addActionListener(new ActionListener() {
+			
+			private Account lastSelected = null;
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Account selected = (Account)comboBoxAccounts.getSelectedItem();	
+				if(selected == lastSelected) {
+					comboBoxAccounts.setSelectedIndex(-1);
+				}
+				lastSelected = selected;
+			}
+		});
 		
 		
 		JPanel panelAccount = new JPanel(new BorderLayout());
@@ -324,8 +338,7 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				/*
-				 * delete the transaction from the list user, from the data and from the GUI
-				 * corresponding list
+				 * delete from the Jlist
 				 */
 				List<Income> selectedIncomes = incomeList.getSelectedValuesList();
 				List<Expenses> selectedExpenses = expenseList.getSelectedValuesList();
@@ -349,6 +362,15 @@ public class MainWindow extends JFrame {
 						
 					}
 				}
+				/*
+				 * delete from the JComboBox
+				 */
+				
+				Account selectedAcc = (Account)comboBoxAccounts.getSelectedItem();
+				if(selectedAcc != null) {
+					usuario.getUserAccounts().remove(selectedAcc);
+					comboBoxAccounts.removeItem(selectedAcc);
+				}
 			}
 		});
 		
@@ -357,15 +379,25 @@ public class MainWindow extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				if (selectedList.equals("expense")) {
-					
-					ExpenseWindow expenseModify = new ExpenseWindow(MainWindow.this, expenseList.getSelectedValue(),usuario,data);
-					expenseModify.setVisible(true);
+				if(selectedList != null) {
+					if (selectedList.equals("expense")) {
+						
+						ExpenseWindow expenseModify = new ExpenseWindow(MainWindow.this, expenseList.getSelectedValue(),usuario,data);
+						expenseModify.setVisible(true);
+					}
+					else if (selectedList.equals("income")) {
+						
+						IncomeWindow incomeModify = new IncomeWindow(incomeList.getSelectedValue() ,usuario, MainWindow.this, data);
+						incomeModify.setVisible(true);
+					}
 				}
-				else if (selectedList.equals("income")) {
+	
+				else if (comboBoxAccounts.getSelectedIndex()!=-1) {
 					
-					IncomeWindow incomeModify = new IncomeWindow(incomeList.getSelectedValue() ,usuario, MainWindow.this, data);
-					incomeModify.setVisible(true);
+					accountWindow = new NewAccount(usuario, data, MainWindow.this, (Account)comboBoxAccounts.getSelectedItem());
+					accountWindow.setVisible(true);
+					setVisible(false);
+					
 				}
 				
 			}
@@ -376,7 +408,8 @@ public class MainWindow extends JFrame {
 		btnDetails.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (incomeList.isSelectionEmpty() && expenseList.isSelectionEmpty()) {
-					textAreaDetails.setText(comboBoxAccounts.getSelectedItem().toString());
+					textAreaDetails.setText(((Account)comboBoxAccounts.getSelectedItem()).details());
+					
 				}
 				else if (incomeList.isSelectionEmpty() && comboBoxAccounts.getSelectedIndex()==-1) {
 					textAreaDetails.setText(expenseList.getSelectedValue().details());
@@ -401,13 +434,13 @@ public class MainWindow extends JFrame {
 		btnAddAccount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				accountWindow = new NewAccount(usuario, data, MainWindow.this);
+				accountWindow = new NewAccount(usuario, data, MainWindow.this, null);
 				accountWindow.setVisible(true);
 				setVisible(false);
 				
 			}
 		});
-		btnAddAccount.setBounds(310, 320, 100, 23);
+		btnAddAccount.setBounds(310, 282, 104, 23);
 		contentPane.add(btnAddAccount);
 
 		JButton btnExit = new JButton("Exit");
@@ -417,8 +450,7 @@ public class MainWindow extends JFrame {
 				data.writeDataUsers();
 				data.writeDataCredentials();
 				dispose();
-				//hacer la salida de la app pero antes cargando todos los datos necesarios al fichero 
-				
+
 			}
 		});
 		btnExit.setBounds(10, 387, 89, 23);
@@ -443,5 +475,10 @@ public class MainWindow extends JFrame {
 		for(Income income : incomeListUser) {
 			modelIncomeList.addElement(income);
 		}
+	}
+	
+	public void updateAccountBox(ArrayList<Account> accountsUser) {
+		modelAccounts = new DefaultComboBoxModel<>(accountsUser.toArray());
+		comboBoxAccounts.setModel(modelAccounts);
 	}
 }

@@ -181,10 +181,7 @@ public class IncomeWindow extends JFrame {
 			if (currentIncome.getComments()!= null) {
 				textAreaComments.setText(currentIncome.getComments());
 			}
-			if (data.userHasIncome(usuario, currentIncome)) {
-				data.deleteIncome(usuario, currentIncome);
-				usuario.getListIncome().remove(currentIncome);
-			}
+
 			
 		}
 		
@@ -193,6 +190,11 @@ public class IncomeWindow extends JFrame {
 		
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				if (data.userHasIncome(usuario, currentIncome)) {
+					data.deleteIncome(usuario, currentIncome);
+					usuario.getListIncome().remove(currentIncome);
+				}
 				
 				if (accountComboBox.getSelectedIndex()==-1 
 						|| amountTextField.getText().isEmpty() || categoryComboBox.getSelectedIndex()==-1) {

@@ -46,8 +46,7 @@ public class Account implements Serializable{
 
 	@Override
 	public String toString() {
-		return  accountName + ",  " + country +"\n"+ "account type:" + accountType+"\n"
-				  + ", current amount:" + starting_amount + currencyAccount;
+		return  accountName + "  "  + currencyAccount;
 	}
 	public Account() {
 		super();
