@@ -267,7 +267,10 @@ public class DataStorage implements Serializable {
 	}
 	
 	public boolean checkCredentials (String email, String password) {
-		return (appUsers.containsKey(email) && appUsers.get(email).equals(password));
+			if(appUsers.get(email).equals(password)) {
+				return true;
+			}
+			return false;
 		}
 			
 	public void addAppUser (String email, String password) {

@@ -27,7 +27,7 @@ public class Expenses extends Transaction {
 
 	@Override
 	public String toString() {
-		return categoryofExpense + String.valueOf(getAmountofTransaction())+"\n"+String.valueOf(getDateofTransaction());
+		return categoryofExpense +":\n "+ String.valueOf(getAmountofTransaction())+"\n "+getDateofTransaction().getTime().toString();
 	}
 	
 	public String details() {

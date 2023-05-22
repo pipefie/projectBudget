@@ -28,6 +28,8 @@ import javax.swing.ListModel;
 import javax.swing.MutableComboBoxModel;
 
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -150,6 +152,7 @@ public class MainWindow extends JFrame {
 		JComboBox <Account> comboBoxAccounts = new JComboBox<Account>(modelAccounts);
 		comboBoxAccounts.setBackground(new Color(128, 128, 128));
 		comboBoxAccounts.setBounds(420, 68, 200, 23);
+		comboBoxAccounts.setSelectedIndex(-1);
 		
 		
 		JPanel panelAccount = new JPanel(new BorderLayout());
@@ -170,17 +173,56 @@ public class MainWindow extends JFrame {
 		labelExpense.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 		panelExpenseList.add(labelExpense, BorderLayout.NORTH);
 
-		if (!expenseListUser.isEmpty()) {
+		if (expenseListUser!=null) { //null pointer piece of shit
 			for (Expenses transaction : expenseListUser) {
 				modelExpenseList.addElement(transaction);
 			}
 		}
+	
 		
 		
 		//expense list
 		expenseList = new JList<Expenses>(modelExpenseList);
+		expenseList.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount()==1) {
+					expenseList.clearSelection();
+				}
+				else if(e.getClickCount()==2) {
+					int index = expenseList.locationToIndex(e.getPoint());
+					expenseList.setSelectedIndex(index);
+				}
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		expenseList.setBounds(10, 34, 290, 155);
-		expenseList.setBackground(new Color(51,51,51));
+		expenseList.setBackground(UIManager.getColor("Button.highlight"));
 		panelExpenseList.add(new JScrollPane(expenseList), BorderLayout.CENTER);
 		
 		
@@ -191,7 +233,7 @@ public class MainWindow extends JFrame {
 		panelIncomeList.add(labelIncome, BorderLayout.NORTH);
 		
 		
-		if (!incomeListUser.isEmpty()) {
+		if (incomeListUser!=null) {
 			for (Income transaction : incomeListUser ) {
 				modelIncomeList.addElement(transaction);
 			}
@@ -199,7 +241,45 @@ public class MainWindow extends JFrame {
 		
 		//income list
 		incomeList = new JList<Income>(modelIncomeList);
-		incomeList.setBackground(new Color(51, 51, 51));
+		incomeList.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount()==1) {
+					incomeList.clearSelection();
+				}
+				else if (e.getClickCount()==2) {
+					int index = incomeList.locationToIndex(e.getPoint());
+					incomeList.setSelectedIndex(index);
+				}
+				
+			}
+		});
+		incomeList.setBackground(UIManager.getColor("Button.highlight"));
 		incomeList.setBounds(10, 215, 290, 155);
 		panelIncomeList.add(new JScrollPane(incomeList), BorderLayout.CENTER);
 		
@@ -280,10 +360,12 @@ public class MainWindow extends JFrame {
 				if (selectedList.equals("expense")) {
 					
 					ExpenseWindow expenseModify = new ExpenseWindow(MainWindow.this, expenseList.getSelectedValue(),usuario,data);
+					expenseModify.setVisible(true);
 				}
 				else if (selectedList.equals("income")) {
 					
 					IncomeWindow incomeModify = new IncomeWindow(incomeList.getSelectedValue() ,usuario, MainWindow.this, data);
+					incomeModify.setVisible(true);
 				}
 				
 			}
@@ -302,6 +384,15 @@ public class MainWindow extends JFrame {
 				else if (comboBoxAccounts.getSelectedIndex()==-1 && expenseList.isSelectionEmpty()) {
 					textAreaDetails.setText(incomeList.getSelectedValue().details());
 				}
+				else if (comboBoxAccounts.getSelectedIndex()!=-1 && (!incomeList.isSelectionEmpty()|| !expenseList.isSelectionEmpty())) {
+					comboBoxAccounts.setSelectedIndex(-1);
+					if(!incomeList.isSelectionEmpty()) {
+						textAreaDetails.setText(incomeList.getSelectedValue().details());
+					}
+					else {
+						textAreaDetails.setText(expenseList.getSelectedValue().details());
+					}
+				}
 				
 			}
 		});
@@ -311,6 +402,7 @@ public class MainWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				accountWindow = new NewAccount(usuario, data, MainWindow.this);
+				accountWindow.setVisible(true);
 				setVisible(false);
 				
 			}

@@ -1,7 +1,8 @@
 package personalbudgetingapp;
+import java.io.Serializable;
 import java.util.Currency;
 
-public class Account {
+public class Account implements Serializable{
 	private String accountName;
 	private String country;
 	public enum AccountType {GENERAL, CASH, CURRENT_ACCOUNT, CREDIT_CARD, SAVING_ACCOUNT, INSURANCE, LOAN, INVESTMENT, MORTGAGE, BONUS, OTHER};
@@ -41,9 +42,12 @@ public class Account {
 	public void setCurrencyAccount(Currency currencyAccount) {
 		this.currencyAccount = currencyAccount;
 	}
+	
+
 	@Override
 	public String toString() {
-		return accountName;
+		return  accountName + ",  " + country +"\n"+ "account type:" + accountType+"\n"
+				  + ", current amount:" + starting_amount + currencyAccount;
 	}
 	public Account() {
 		super();

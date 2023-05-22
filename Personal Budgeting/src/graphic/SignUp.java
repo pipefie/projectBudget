@@ -132,8 +132,12 @@ public class SignUp extends JFrame {
 				}
 				
 				usuario.setEmail(textField_email.getText());
-				usuario.setPassword(String.valueOf(passwordField.getPassword()));
-				data.addAppUser(textField_email.getText(), passwordField.getPassword().toString());
+				
+				char[] userPasswordChar = passwordField.getPassword();
+				String userPassword = new String(userPasswordChar);
+				
+				usuario.setPassword(userPassword);
+				data.addAppUser(textField_email.getText(), userPassword);
 				
 				usuario.setFirstName(first_name.getText());
 				usuario.setLasName(last_name.getText());

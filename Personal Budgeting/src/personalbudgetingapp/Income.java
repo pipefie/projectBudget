@@ -32,7 +32,7 @@ public class Income extends Transaction {
 
 	@Override
 	public String toString() {
-		return  categoryofIncome + String.valueOf(getAmountofTransaction())+"\n"+String.valueOf(getDateofTransaction());
+		return  categoryofIncome + ":\n " +String.valueOf(getAmountofTransaction())+"\n "+getDateofTransaction().getTime().toString();
 	}
 	public String details() {
 		return "Account: "+ getAccountofTransaction().getAccountName()

@@ -110,7 +110,7 @@ public class IncomeWindow extends JFrame {
 		MutableComboBoxModel modelAccountsBox = new DefaultComboBoxModel<>(userAccounts.toArray(new Account[0]));
 		JComboBox<Account> accountComboBox = new JComboBox<>(modelAccountsBox);
 		accountComboBox.setBounds(15, 39, 196, 22);
-		modelAccountsBox.setSelectedItem(-1);
+		accountComboBox.setSelectedIndex(-1);
 		accountComboBox.addActionListener(new ActionListener() {
 			
 			@Override

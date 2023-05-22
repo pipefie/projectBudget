@@ -65,7 +65,7 @@ public class NewAccount extends JFrame {
 		this.data = data;
 		this.mainWindow = mainWindow;
 		cuentaUser = new Account();
-		userAccounts = usuario.getUserAccounts();
+		userAccounts = usuario.getUserAccounts(); //encontrar duplicado de account
 		accountCreation();
 	}
 
@@ -220,9 +220,7 @@ public class NewAccount extends JFrame {
 					}
 				userAccounts.add(cuentaUser);
 				mainWindow.setVisible(true);
-				JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(btnAdd);
-				JOptionPane.showMessageDialog(parentFrame, "Successful SignUp", "SignUp Complete", JOptionPane.INFORMATION_MESSAGE);
-				
+	
 				dispose();
 				
 				
